@@ -1,0 +1,177 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: aquamarine; 
+}
+
+#header{
+    height: 15%;
+    background-color: white;
+    text-align: center;
+}
+#menu{
+    height: 45px;
+    background-color: white;
+    padding-left: 35%;
+    margin-top: -16px;
+}
+.menu_li{
+    float: left;
+    padding: 10px 10px;
+    list-style-type: none;
+    text-align: center;
+    border: 3px solid green;
+    background-color: aqua;
+    border-radius: 5px;
+}
+#sidebar{
+    margin-right: 85%;
+    margin-left: 2%;
+    margin-top: -0%;
+    border: 5px solid #22d69c;
+    background-color: #38bc92;
+}
+#side{
+    margin-left: 15%; 
+    margin-top: -25% !important;
+}
+.bre{
+    list-style-type: none;
+    float: left;
+    padding: 5px 12.2px;
+    border: 5px solid #22d69c;
+    margin-top: -4.5%;
+}
+#breadcrumbs{
+    margin-top: 0px;
+    height: 35px;
+    padding-left: 1%;
+    margin-right: 5%;
+    border: 5px solid #22d69c;
+    
+}
+#content{
+    padding: 0px;
+    margin-right: 5%;
+    height: 800px;;
+    background-color: #38b1bc;
+}
+#content2{
+    padding: 10px;
+    margin-right: 5%;
+    height: 100%;
+    background-color: #38b1bc;
+}
+#ol2{
+    margin-left: 39%;
+    margin-top: -1%;
+}
+.product{
+    text-align: center;
+    width: 158px;
+    float: left;
+    padding: 5px 5px;
+    border: 2px solid #7adbbc;
+}
+.product:hover{
+    border: 2px solid green;
+    background-color:aquamarine;
+}
+
+.product img{
+   width: 141px;
+    height: 160px;
+}
+.btn_cart{
+    padding: 2px 2px;
+    background-color: deepskyblue;
+    text-decoration-line: none;
+    font-family: monospace;
+    border: 1px solid white;
+}
+.media{
+    width: 50px;
+    border-radius: 15px;
+}
+
+
+
+#details{
+    margin-left: 62%;
+    text-align: center;
+    margin-top: -58.5%;
+    margin-bottom: 50%;
+    background-color: aliceblue;
+    font-family: cursive;
+}
+#details button{
+    width: 45%;
+    font-size: 25px;
+    background-color: aquamarine;
+}
+#details #desc{
+    font-size: 20px;
+}
+#details a{
+    font-size: 20px;
+    background-color: antiquewhite;
+    text-decoration-line: none;
+    padding: 5px;
+    border-radius: 5px;
+    
+}
+#details input{
+    font-size: 20px;
+    width: 50px;
+    height: 28px;
+    border: 3px solid antiquewhite;
+    border-radius: 5px;
+}
+.ipre img{
+   width: 100px;  
+    height: 100px;
+    padding: 10px;
+    border: 2px solid white;
+}
+.ipre{
+    list-style-type: none;
+    float: left;
+}
+
+#msform{
+    padding-left: 50px
+}
+#form input,#form select, #form textarea{
+    display:block;
+    padding: 10px;
+    margin: 10px;
+    align-content: center;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+h1{
+    text-align: center;
+}
+#clinks a{
+   padding: 4px 4px;
+    background-color: deepskyblue;
+    text-decoration-line: none;
+    font-family: monospace;
+    border: 2px solid white;
+    
+}
