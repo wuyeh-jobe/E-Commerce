@@ -1,5 +1,8 @@
 <?php
 include 'db_connection.php';
+
+
+//This function is for adding a product to the database
 function addingProduct()
 {
     if(isset($_POST['submit'])){
@@ -11,7 +14,7 @@ function addingProduct()
         $category = $_POST['cat'];
         $k_words = $_POST['kw'];
         
-        $currentDir = getcwd();
+        $currentDir = getcwd(); //get current directory
         
         $uploadDirectory = "\image\\";
         $fileName = $_FILES['image']['name'];
@@ -146,7 +149,7 @@ function addFromSingle(/*$quantity,$p_id*/){
 //This function is for registering a user
 function register()
 {
-    if(isset($_POST['submit'])){
+    if(isset($_POST['submitregister'])){
         $name= sanitize($_POST['name']);
         $email=sanitize($_POST['email']);
         $password= $_POST['password'];
@@ -167,17 +170,17 @@ function register()
             //check if email already exist before inserting
             $result = executeQuery("SELECT customer_email FROM customer WHERE customer_email = '".$email."'");
             if($result->num_rows > 0){ // email exists
+                echo "<h4 style='text-align:center'>Email already exist.  <a href='login.php'>Login. </a></h4>";
                 
-                return "<h4 style='text-align:center'>Email already exist. If you have forgotten your password <a href='#'>change it.</h4>";
             }
             else{
                 //Insert into the database
                 if(executeQuery("INSERT into customer (customer_ip,customer_name,customer_email,customer_pass,customer_country,customer_city,customer_contact,customer_image,customer_address) Values('$ip_add','$name','$email', '$password', '$country', '$city', '$contact', '$image', '$address')")){
-                    return "<h4 style='text-align:center'>You are registered successfully</h4>";
+                    echo "<h4 style='text-align:center'>You are registered successfully. <a href='login.php'>Login. </a></h4>";
                 }
                 else{
                     redirect("register.php");
-                    return 'insertion failed';
+                    echo 'insertion failed';
                 }
             }
         }
@@ -222,7 +225,7 @@ function login(){
             redirect("../index.php");
         }
         else{
-            return "<h4 style='text-align:center'>Wrong email and password combination</h4>";
+            return "<h4 style='text-align:center'>Wrong email and password combination <a href='register.php'>Sign Up</a> </h4>";
         }	
     
 }
@@ -282,7 +285,7 @@ function transaction(){
 }
 //This function calls register when the create acount button on the register page is clicked.
 if(isset($_POST['submitregister'])){
-    echo register();
+    register();
 }
 
 //This calls the login function when the user clicks on login on the login page

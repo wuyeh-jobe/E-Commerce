@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.js"></script>
     <script>
+        
+        //This function is for doing a live search
         function showResult(str) {
           if (str.length==0) { 
             //document.getElementById("form-popup").innerHTML= "Nothing Matched";
@@ -64,6 +66,8 @@
             //and y is sending the json database parameter
             xmlhttp.send("x=" + str+"&"+"y=" + dbParam);
         }
+        
+        //This function is invoked when a user clicks "Add to cart" on the product/index page. It adds/update a product by sendind a json request. It also displays the shopping cart
         function aggregate(id,action){
           if (window.XMLHttpRequest) {
             // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -127,12 +131,25 @@
             xmlhttp.send("x=" + id+"&y=" + dbParam+"&z="+ip_add+"&a="+action);
         }
         
-        
+        //Validation of sign up form
         function validateRegister(){
+            var phoneno = /^\d{10}$/;
+            var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             if (document.getElementById("name").value == "" || document.getElementById("email").value == "" || document.getElementById("password").value == "" || document.getElementById("country").value == "" || document.getElementById("city").value == "" || document.getElementById("contact").value == "" || document.getElementById("image").value == "" || document.getElementById("address").value == ""){
                 alert("None of the fields should be empty");
                 return false;
             }
+            else if(!(document.getElementById("email").value.match(mailformat)))
+            {
+                 alert("email format is not right");
+                return false;
+            }
+            else if(!(document.getElementById("contact").value.match(phoneno)))
+            {
+                 alert("Phone number should not contain letters and must be ten numbers");
+                return false;
+            }
+            
                 
         }
 
