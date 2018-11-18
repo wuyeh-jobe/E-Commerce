@@ -1,3 +1,4 @@
+<?php session_start();  ?>
 <!doctype html>
 
 <html lang="en">
@@ -46,15 +47,10 @@
                             }
                             
                             txt += "<div class='product' id='"+ myObj[y].product_id +"'><a href='pages/productview.php?id="+ myObj[y].product_id +"'><img src='"+imgSrc+"'><a><p>"+ myObj[y].product_title + "<br> $"+ myObj[y].product_price + "<br><a class= 'btn_cart' id='"+myObj[y].product_id+"' href='#' onclick='aggregate(this.id,-50)'>Add to Cart</a></div>";
-                            //txt += "<a href='pages/productview.php?id="+ myObj[y].product_id + "'>"+ myObj[y].product_title + "<a><hr>";
-                        //txt += myObj[y].product_title + " | GHS"+ myObj[y].product_price + "<hr>";
-                         //console.log(txt);
                         }
                         document.getElementById("content").innerHTML=txt;
                          document.getElementById("myForm").style.display = "none";
                     }
-
-                    //document.getElementById("myForm").style.display = "block";
                 }
             }
             if(loc.includes("pages")){
@@ -130,7 +126,15 @@
             //and y is sending the json database parameter
             xmlhttp.send("x=" + id+"&y=" + dbParam+"&z="+ip_add+"&a="+action);
         }
-        aggregate(-1,-1);
+        
+        
+        function validateRegister(){
+            if (document.getElementById("name").value == "" || document.getElementById("email").value == "" || document.getElementById("password").value == "" || document.getElementById("country").value == "" || document.getElementById("city").value == "" || document.getElementById("contact").value == "" || document.getElementById("image").value == "" || document.getElementById("address").value == ""){
+                alert("None of the fields should be empty");
+                return false;
+            }
+                
+        }
 
         
         
@@ -152,20 +156,46 @@
     </style>
 </head>
 
-<body>
+<body onload="aggregate(-1,-1)">
     <div id= "container">
+        <?php
+         $path = explode("\\", getcwd());
+        if ($path[sizeof($path)-1]=="pages"){
+            if (isset($_SESSION["name"]))
+                {
+                    
+                echo "<div style='margin-left:80%'>Welcome ".$_SESSION["name"]." <a href='logout.php'>Logout</a> </div>";
+            } 
+            else{
+                echo "<div style='margin-left:80%'><a href='login.php'>Login</a> </div>";
+            }
+        }else{
+            if (isset($_SESSION["name"]))
+                {
+                    
+                echo "<div style='margin-left:80%'>Welcome ".$_SESSION["name"]." <a href='./pages/logout.php'>Logout</a> </div>";
+            } 
+            else{
+                echo "<div style='margin-left:80%'><a href='./pages/login.php'>Login</a> </div>";
+            }
+        }
+        
+        ?>
+        
+        
         <div id="header">
-            <?php 
+            <?php
                 $path = explode("\\", getcwd());
                 if ($path[sizeof($path)-1]=="pages"){
-                   echo "<img src='../image/Banner.JPG'>
+                   echo "
+                   <img src='../image/Banner.JPG'>
                     </div>
                     <div id='menu'>
                         <ol>
                             <a href='../index.php'><li class='menu_li'>Home</li></a>
                             <a href='product.php'><li class='menu_li'>Products</li></a>
                             <a href='account.php'><li class='menu_li'>Account</li></a>
-                            <a href='SignUp.php'><li class='menu_li'>Sign Up</li></a>
+                            <a href='register.php'><li class='menu_li'>Sign Up</li></a>
                             <a href='ShoppingCart.php'><li class='menu_li'>Shopping Cart</li></a>
                             <a href='contactUs.php'><li class='menu_li'>Contact Us</li></a>
                             <li class='menu_li'><input type='text' onkeyup='showResult(this.value)' placeholder='Start typing to search'><button>Search</button></li>
@@ -173,14 +203,15 @@
                     </div>";
                 }
                 else{
-                   echo "<img src='image/Banner.JPG'>
+                   echo "
+                   <img src='image/Banner.JPG'>
                     </div>
                     <div id='menu'>
                         <ol>
                             <a href='index.php'><li class='menu_li'>Home</li></a>
                             <a href='./pages/product.php'><li class='menu_li'>Products</li></a>
                             <a href='./pages/account.php'><li class='menu_li'>Account</li></a>
-                            <a href='./pages/SignUp.php'><li class='menu_li'>Sign Up</li></a>
+                            <a href='./pages/register.php'><li class='menu_li'>Sign Up</li></a>
                             <a href='./pages/ShoppingCart.php'><li class='menu_li'>Shopping Cart</li></a>
                             <a href='./pages/contactUs.php'><li class='menu_li'>Contact Us</li></a>
                              <li class='menu_li'><input type='text' onkeyup='showResult(this.value)' placeholder='Start typing to search'><button>Search</button></li>
@@ -216,7 +247,7 @@
                     <ol id="ol2">                        
                         <li class="bre">Welcome Guest</li>
                         <li id="pUpdate" class="bre"></li>
-                        <?php 
+                        <?php
                         $path = explode("\\", getcwd());
                             if ($path[sizeof($path)-1]=="pages"){
                                 echo "<li class='bre'><a href='ShoppingCart.php'>Go to Cart</a></li>";

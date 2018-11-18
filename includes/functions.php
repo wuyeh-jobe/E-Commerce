@@ -1,5 +1,4 @@
 <?php
-
 include 'db_connection.php';
 function addingProduct()
 {
@@ -31,6 +30,8 @@ function addingProduct()
 
     }
 }
+
+//This function populates the dropdown list in the add product form
 function populateFields($table_item1,$table_item2,$table)
 {
         $conn = OpenCon();  
@@ -43,7 +44,7 @@ function populateFields($table_item1,$table_item2,$table)
         }
         CloseCon($conn);
 }
-//$id = 0;
+//This function displays the products from the database
 function displayProducts($page){
         $conn = OpenCon();
         $sql = "SELECT * FROM products";
@@ -52,6 +53,11 @@ function displayProducts($page){
             $title = $rows["product_title"];
             $price = $rows["product_price"];
             $id = $rows["product_id"];
+            
+            //FOr putting just one product with a quantity of one in the cart w
+            $_SESSION["item"] = $title;
+            $_SESSION["amount"] = $price;
+            $_SESSION["p_id"] = $id;
             if($page=="index"){
                $imgSrc = "image/".$rows["product_image"]; 
                 echo "<div class='product'>
@@ -74,6 +80,8 @@ function displayProducts($page){
         }  
         CloseCon($conn);
 }
+
+//This function displays the single product given an id
 function singleProduct($product_id){
         $conn = OpenCon();
         $sql = "SELECT * FROM products where product_id=".$product_id;
@@ -111,6 +119,8 @@ function singleProduct($product_id){
         }  
         CloseCon($conn);
 }
+
+//This function adds to cart from the single product page view
 function addFromSingle(/*$quantity,$p_id*/){
     $conn = OpenCon();
     if(isset($_POST['submit'])){
@@ -118,6 +128,10 @@ function addFromSingle(/*$quantity,$p_id*/){
         $qty = $_POST['quantity'];
         $sql1 = "SELECT * FROM cart where p_id = ".$p_id;
         $result = $conn -> query($sql1);
+        if ($result->num_rows==0){
+            $query = "INSERT INTO cart (p_id, ip_add, qty) VALUES ('$id','$ip_add','$qty')";
+            $conn->query($query);
+        }
         while ($rows = $result->fetch_assoc()){
             $oldQty = $rows['qty'];
             $newQty = $qty + $oldQty;
@@ -127,6 +141,178 @@ function addFromSingle(/*$quantity,$p_id*/){
     
     CloseCon($conn);
     
+}
+
+//This function is for registering a user
+function register()
+{
+    if(isset($_POST['submit'])){
+        $name= sanitize($_POST['name']);
+        $email=sanitize($_POST['email']);
+        $password= $_POST['password'];
+        $country = sanitize($_POST['country']);
+        $city = sanitize($_POST['city']);
+        $contact = sanitize($_POST['contact']);
+        $image = $_FILES['image']['name'];
+        $address = sanitize($_POST['address']);
+        $ip_add = $_SERVER['REMOTE_ADDR'];
+    
+        //hash the password
+        $password = password_hash($password, PASSWORD_BCRYPT, array("cost" => 12));
+        
+        if ($email == "" || $name == "" || $password == "" || $country == "" || $city == "" || $contact == "" || $image == "" || $address == "" || $ip_add == ""){
+            return "<h4 style='text-align:center'>None of the fields should be empty </a></h4>";
+        }
+        else{
+            //check if email already exist before inserting
+            $result = executeQuery("SELECT customer_email FROM customer WHERE customer_email = '".$email."'");
+            if($result->num_rows > 0){ // email exists
+                
+                return "<h4 style='text-align:center'>Email already exist. If you have forgotten your password <a href='#'>change it.</h4>";
+            }
+            else{
+                //Insert into the database
+                if(executeQuery("INSERT into customer (customer_ip,customer_name,customer_email,customer_pass,customer_country,customer_city,customer_contact,customer_image,customer_address) Values('$ip_add','$name','$email', '$password', '$country', '$city', '$contact', '$image', '$address')")){
+                    return "<h4 style='text-align:center'>You are registered successfully</h4>";
+                }
+                else{
+                    redirect("register.php");
+                    return 'insertion failed';
+                }
+            }
+        }
+        
+        
+
+
+    }
+}
+
+//This function is used to login a user
+function login(){
+        
+        $email = sanitize($_POST['email']);
+        $password = sanitize($_POST['password']);
+        $result = executeQuery("SELECT * FROM customer WHERE customer_email = '".$email."'" );
+        $row = $result->fetch_assoc();
+        $validPassword = password_verify($password, $row['customer_pass']);
+        if ($validPassword) { 
+            $_SESSION["name"] = $row['customer_name'];
+            $_SESSION["id"] = $row['customer_id'];
+            $_SESSION["email"] = $row['customer_email'];
+            $_SESSION["address"] = "<table>
+               <h4>Contact and Adress details</h4>
+                <tr>
+                   <th>Email</th>
+                   <td>".$row['customer_email']."</td>
+                </tr>
+                
+                <tr>
+                   <th>Contact</th>
+                   <td>".$row['customer_contact']."</td>
+                </tr>
+                
+                 <tr>
+                   <th>Address</th>
+                   <td>".$row['customer_address']."<br>".$row['customer_city']."<br>".$row['customer_country']."</td>
+                </tr>
+                
+           </table>";
+           
+            redirect("../index.php");
+        }
+        else{
+            return "<h4 style='text-align:center'>Wrong email and password combination</h4>";
+        }	
+    
+}
+
+//This function sends an email to the user, return "Completed" when the email is sent and "In Progress" when it's not sent
+function sendEmail(){
+    $to = $_SESSION["email"];
+    $email= 'jwuyeh@gmail.com';
+
+    $headers = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= "From: " . $email . "\r\n"; // Sender's E-mail
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+    $message ='<table style="width:100%">
+                <h4>Order Details</h4>
+                <tr>
+                   <th>Item</th>
+                   <th>Quantity</th>
+                   <th>Amount</th>
+                </tr>
+                 <tr>
+                   <td>'.$_SESSION["item"].'</td>
+                   <td> 1 </td>
+                   <td>'.$_SESSION["amount"].'</td>
+                </tr>
+        
+    </table><br>'.$_SESSION["address"];
+    
+    
+
+    if (@mail($to, $email, $message, $headers))
+    {
+        return 'Completed.';
+    }else{
+        return 'In Progress';
+    }
+}
+//This function is called after a transaction has been comppleted to insert the order and payment, and delete the product from the cart
+function transaction(){
+    $p_id = $_SESSION["p_id"];
+    $c_id = $_SESSION["id"];
+    $invoice = mt_rand();
+    $qty = 1;
+    $date = date("Y-m-d");
+    $status = sendEmail();
+    
+    $amount = $_SESSION["amount"];
+    $query = "INSERT INTO orders (product_id, customer_id, invoice_no, qty,`order-date`, status) VALUES ('$p_id','$c_id','$invoice','$qty','$date','$status')";
+    executeQuery($query);
+    
+    $query2 = "INSERT INTO payment (amt, customer_id, product_id,currency,payment_date) VALUES ('$amount','$c_id','$p_id','USD','$date')";
+    executeQuery($query2);
+    
+    executeQuery("DELETE from cart where p_id =".$p_id);
+    
+    
+}
+//This function calls register when the create acount button on the register page is clicked.
+if(isset($_POST['submitregister'])){
+    echo register();
+}
+
+//This calls the login function when the user clicks on login on the login page
+if(isset($_POST['submitlogin'])){
+    echo login();
+}
+
+//This function redirects the user to the specified URL
+function redirect($URL){
+    echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
+    echo '<META HTTP-EQUIV="refresh" content="0;URL=' . $URL . '">'; 
+}
+
+
+
+
+// a function that executes every query
+function executeQuery($query){
+	$conn = OpenCon();
+	$result = $conn->query($query);
+	CloseCon($conn);
+    return $result;
+}
+
+// a function that sanitizes a string to avoid sql injection
+function sanitize($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
 }
 
 

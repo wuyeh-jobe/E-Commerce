@@ -1,4 +1,6 @@
-<?php include 'view/layout.php' ?>
+<?php 
+    include 'view/layout.php';
+?>
 
     <div id="content">
         <?php 

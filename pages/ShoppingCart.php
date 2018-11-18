@@ -5,7 +5,13 @@
             <br>
             <div id="clinks" style="text-align:center">
                 <a href="product.php">Continue Shopping</a>
-                <a href="#">Checkout</a>
+                <?php
+                    if(isset($_SESSION["name"]))
+                        echo "<a href='checkout.php'>Checkout</a>";
+                    else
+                        echo "<a href='login.php'>Checkout</a>";   
+                ?>
+                
             </div>
         </div>
 <?php include '../view/footer.php' ?>
